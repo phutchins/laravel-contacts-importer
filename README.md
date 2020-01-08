@@ -7,7 +7,8 @@ Make sure you have `npm`, `docker` and `composer` on your local machine
 
 1.  Clone this repository and cd into it
 2.  Run `composer install` and `npm install` to download laravel dependencies
-3.  (optional) Run `php artisan key:generate` to generate a key for the app (or for testing use the one in .env.example)
+3.  Copy `.env.example` to `.env`
+4.  (optional) Run `php artisan key:generate` to generate a key for the app (or for testing use the one in .env.example)
 5.  (optional) Set up your database in your `.env` (or use defaults in .env.example if using docker-compose)
 6.  Execute `npm run dev` to build project assets
 7.  Run `docker-compose up`
