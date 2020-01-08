@@ -1,0 +1,63 @@
+version: "2.2"
+
+services:
+  app:
+    build:
+      context: ./docker
+      dockerfile: app.dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www:delegated
+      - /var/www/node_modules
+    env_file:
+      - .docker.env
+    environment:
+      - "DB_PORT=3306"
+      - "DB_HOST=database"
+      - "REDIS_HOST=redis"
+      - "REDIS_PORT=6379"
+    ports:
+      - 9000:9000
+
+  web:
+    build:
+      context: ./docker
+      dockerfile: web.dockerfile
+    working_dir: /var/www
+    volumes_from:
+      - app
+    environment:
+      - "MIX_PUSHER_APP_KEY=importappkey"
+      - "MIX_PUSHER_APP_CLUSTER=importappcluster"
+    ports:
+      - 8080:80
+
+  database:
+    image: mysql:5.7
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      - "MYSQL_DATABASE=laravel"
+      - "MYSQL_USER=root"
+      - "MYSQL_PASS=secret"
+      - "MYSQL_ROOT_PASSWORD=secret"
+    ports:
+      - "33061:3306"
+
+  redis:
+    image: redis:4.0
+    ports:
+      - "63791:6379"
+
+  echoserver:
+    build:
+      context: ./docker
+      dockerfile: echoserver.dockerfile
+    working_dir: "/usr/src/app"
+    volumes:
+      - "./:/usr/src/app"
+    ports:
+      - "60011:6001"
+
+volumes:
+  dbdata:
